@@ -72,36 +72,69 @@ export default function HomePage() {
   }
 
   const deposit = async() => {
-    if (atm) {
-      let tx = await atm.deposit(2);
-      await tx.wait()
-      getBalance();
+    try {
+      if (atm) {
+        let tx = await atm.deposit(2);
+        await tx.wait()
+        getBalance();
+      }
+    } catch (error) {
+        // Handle user rejection
+        if (error.code === 4001) {
+            console.log("User rejected the connection request");
+            alert("MetaMask connection request was cancelled.");
+        } else {
+            console.error("An error occurred during MetaMask connection:", error);
+            alert("An unexpected error occurred during MetaMask connection. Please try again.", error);
+        }
     }
   }
 
   const withdraw = async() => {
-    if (atm && balance>0) {
-      let tx = await atm.withdraw(1);
-      await tx.wait()
-      getBalance();
-    } else if (atm && balance === 0) {
-      // return (
-      //   <div>Insufficient balance, there is nothing to withdraw</div>
-      // )
-      alert('Insufficient balance, there is nothing to withdraw')
+    try {
+      if (atm && balance > 0) {
+        let tx = await atm.withdraw(1);
+        await tx.wait()
+        getBalance();
+      } else if (atm && balance === 0) {
+        // return (
+        //   <div>Insufficient balance, there is nothing to withdraw</div>
+        // )
+        alert('Insufficient balance, there is nothing to withdraw')
+      }
+    } catch (error) {
+        // Handle user rejection
+        if (error.code === 4001) {
+            console.log("User rejected the connection request");
+            alert("MetaMask connection request was cancelled.");
+        } else {
+            console.error("An error occurred during MetaMask connection:", error);
+            alert("An unexpected error occurred during MetaMask connection. Please try again.");
+        }
     }
   }
 
   const withdrawAll = async () => {
-    if (atm) {
-      let tx = await atm.withdraw(balance);
-      await tx.wait()
-      getBalance();
-    }else if (atm && balance === 0) {
-      // return (
-      //   <div>Insufficient balance, there is nothing to withdraw</div>
-      // )
-      alert('Insufficient balance, there is nothing to withdraw')
+    try {
+      if (atm) {
+        let tx = await atm.withdraw(balance);
+        await tx.wait()
+        getBalance();
+      } else if (atm && balance === 0) {
+        // return (
+        //   <div>Insufficient balance, there is nothing to withdraw</div>
+        // )
+        alert('Insufficient balance, there is nothing to withdraw')
+      }
+    } catch (error) {
+        // Handle user rejection
+        if (error.code === 4001) {
+            console.log("User rejected the connection request");
+            alert("MetaMask connection request was cancelled.");
+        } else {
+            console.error("An error occurred during MetaMask connection:", error);
+            alert("An unexpected error occurred during MetaMask connection. Please try again.");
+        }
     }
   }
 
@@ -126,7 +159,7 @@ export default function HomePage() {
       <div>
         <p className={styles.Font}>Your Account: {account}</p>
         <p className={styles.Font}>Your Balance: {balance}</p>
-        <button className={styles.ConnectedButton} onClick={deposit}>Deposit 1 ETH</button>
+        <button className={styles.ConnectedButton} onClick={deposit}>Deposit 2 ETH</button>
         <button className={styles.ConnectedButton} onClick={withdraw}>Withdraw 1 ETH</button>
         <button className={styles.ConnectedButton} onClick={withdrawAll}>Withdraw All ETH</button>
       </div>
